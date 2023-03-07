@@ -2,9 +2,9 @@ import { DatabaseModule } from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import Joi from 'joi';
-import { ProductARepository } from '../../product-a/src/product-a.repository';
+import * as Joi from 'joi';
 import { ProductBController } from './product-b.controller';
+import { ProductBRepository } from './product-b.repository';
 import { ProductBService } from './product-b.service';
 import { ProductB, ProductBSchema } from './schemas/product-b.schema';
 
@@ -21,6 +21,6 @@ import { ProductB, ProductBSchema } from './schemas/product-b.schema';
     MongooseModule.forFeature([{name: ProductB.name, schema: ProductBSchema}])
   ],
   controllers: [ProductBController],
-  providers: [ProductBService, ProductARepository],
+  providers: [ProductBService, ProductBRepository],
 })
 export class ProductBModule {}

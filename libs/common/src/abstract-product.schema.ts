@@ -9,17 +9,17 @@ export class AbstractProduct {
   @IsMongoId()
   _id: Types.ObjectId
 
-  @Prop([String])
+  @Prop(String)
   @IsString()
   @IsNotEmpty()
   name: string
 
-  @Prop([String])
+  @Prop(String)
   @IsString()
   @IsOptional()
   description?: string
   
-  @Prop([Number])
+  @Prop(Number)
   @IsNotEmpty()
   @IsNumber()
   value: number

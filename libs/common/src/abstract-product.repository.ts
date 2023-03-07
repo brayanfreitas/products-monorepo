@@ -35,6 +35,10 @@ export abstract class AbstractProductRepository<TDocument extends AbstractProduc
     return document;
   }
 
+  async find(filterQuery: FilterQuery<TDocument>) {
+    return await this.model.find(filterQuery, {}, { lean: true })
+  }
+
   async startTransaction(): Promise<ClientSession> {
     const session = await this.connection.startSession();
     session.startTransaction();

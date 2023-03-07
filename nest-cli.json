@@ -7,7 +7,7 @@
     "tsConfigPath": "apps/product-a/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/products-monorepo",
+  "root": "apps/product-a",
   "projects": {
     "product-a": {
       "type": "application",
