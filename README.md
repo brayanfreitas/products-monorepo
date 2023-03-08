@@ -1,5 +1,5 @@
 <h1 align="center">
-    <a href="https://github.com/brayanfreitas/challenge-covid-daily-cases">🦠  Challenge Covid Daily Cases</a>
+    <a href="https://github.com/brayanfreitas/products-monorepo">🦠 Microsserviço de Produtos usando RabbitMQ</a>
 </h1>
 <p align="center">Microsservice com RabbitMQ, NestJS e MongoDB </p>
 
