@@ -17,13 +17,46 @@ services:
     ports:
       - '3000:3000'
 
+  product-b:
+    build:
+      context: .
+      dockerfile: ./apps/product-b/Dockerfile
+      target: development
+    command: npm run start:dev product-b
+    env_file:
+      - ./apps/product-b/.env
+    depends_on:
+      - mongodb1
+    volumes:
+      - .:/usr/src/app
+      - /user/src/app/node_modules
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
   mongodb1:
     image: mongo:latest
     container_name: mongodb1
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_DATABASE=my-mongodb
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    volumes:
+      # seeding scripts
+      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      # named volumes
+      - mongodb:/data/db
+
+  mongodb2:
+    image: mongo:latest
+    container_name: mongodb2
+    ports:
+      - 27018:27017
+    environment:
+      - MONGO_INITDB_DATABASE=mongodb2
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
     volumes:
