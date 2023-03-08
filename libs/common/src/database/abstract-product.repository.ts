@@ -1,5 +1,5 @@
-import { Logger, NotFoundException } from '@nestjs/common';
-import { ClientSession, Connection, FilterQuery, Model, SaveOptions, Types } from 'mongoose';
+import { Logger } from '@nestjs/common';
+import { ClientSession, Connection, FilterQuery, Model, QueryOptions, SaveOptions, Types } from 'mongoose';
 import { AbstractProduct } from './abstract-product.schema';
 
 export abstract class AbstractProductRepository<TDocument extends AbstractProduct>{
@@ -26,17 +26,19 @@ export abstract class AbstractProductRepository<TDocument extends AbstractProduc
 
   async findOne(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
     const document = await this.model.findOne(filterQuery, {}, { lean: true } );
-
-    if(!document){
-      this.logger.warn('Document not found fo filterQuery', filterQuery);
-      throw new NotFoundException('Document not found')
-    }
-
     return document;
   }
 
-  async find(filterQuery: FilterQuery<TDocument>) {
-    return await this.model.find(filterQuery, {}, { lean: true })
+  async find(filterQuery: FilterQuery<TDocument>, options?: QueryOptions<TDocument> ) {
+    let documents = await this.model.find(filterQuery, {}, { lean: true, ...options })
+    if(options){
+      documents = await this.model.find(filterQuery, {}, { lean: true, ...options });
+      console.log(filterQuery)
+    }else {
+      documents = await this.model.find(filterQuery, {}, { lean: true });
+    }    
+    return documents;
+    
   }
 
   async startTransaction(): Promise<ClientSession> {

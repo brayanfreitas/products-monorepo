@@ -1,4 +1,4 @@
-version: '2'
+version: '3.8'
 
 services:
   product-a:
@@ -9,8 +9,6 @@ services:
     command: npm run start:dev product-a
     env_file:
       - ./apps/product-a/.env
-    depends_on:
-      - mongodb1
     volumes:
       - .:/usr/src/app
       - /user/src/app/node_modules
@@ -25,8 +23,6 @@ services:
     command: npm run start:dev product-b
     env_file:
       - ./apps/product-b/.env
-    depends_on:
-      - mongodb1
     volumes:
       - .:/usr/src/app
       - /user/src/app/node_modules
@@ -34,41 +30,29 @@ services:
     image: rabbitmq
     ports:
       - '5672:5672'
-  mongodb1:
-    image: mongo:latest
-    container_name: mongodb1
+
+  mongo1:
+    container_name: mongo-replica-set
+    image: candis/mongo-replica-set
+    volumes:
+      - ~/mongors/data1:/data/db
+    networks:
+      - mongors-network
     ports:
       - 27017:27017
-    environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
-      - MONGODB_REPLICA_SET_MODE=primary
-      - MONGODB_ROOT_PASSWORD=password123
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
-    volumes:
-      # seeding scripts
-      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
-      # named volumes
-      - mongodb:/data/db
-
-  mongodb2:
-    image: mongo:latest
-    container_name: mongodb2
-    ports:
       - 27018:27017
+      - 27019:27017
+
+  mongo2:
+    image: mongo:4.4
+    ports:
+      - "27020:27017"
+    networks:
+      - mongors-network
     environment:
-      - MONGO_INITDB_DATABASE=mongodb2
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
+      MONGO_INITDB_DATABASE: mydb2
     volumes:
-      # seeding scripts
-      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
-      # named volumes
-      - mongodb:/data/db
-
-volumes:
-  mongodb:
-
-
+      - ~/mongors/data2:/data/db
 networks:
-  mongo_net:
+  mongors-network:
     driver: bridge

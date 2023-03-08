@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateProductRequest } from './dto/create-product.request';
+import { Body, Controller, DefaultValuePipe, Get, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { CreateProductRequest } from '../../product-b/src/dto/create-product.request';
 import { ProductAService } from './product-a.service';
 
 @Controller('ProductA')
@@ -12,7 +12,10 @@ export class ProductAController {
   }
 
   @Get()
-  async getProducts(){
-    return this.productAService.getProducts();
+  async getProducts(
+  @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+  @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit = 5,
+  @Query('search', new DefaultValuePipe(null)) search = null){
+    return this.productAService.getProducts(page, limit, search);
   }
 }
